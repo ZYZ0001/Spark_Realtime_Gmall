@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoggerController {
 
     @Autowired
-//    KafkaTemplate<String, String> kafkaTemplate;
+//KafkaTemplate<String, String> kafkaTemplate;
 
     @PostMapping("log")
     public String dolog(@RequestParam("logString") String logString) {
