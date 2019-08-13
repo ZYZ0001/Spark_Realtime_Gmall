@@ -126,8 +126,8 @@ public class JsonMocker {
              */
 
 
-        String mid = "mid_" + RandomNum.getRandInt(1, 500);
-        String uid = "uid_" + RandomNum.getRandInt(1, 500);
+        String mid = "mid_" + RandomNum.getRandInt(1, 800);
+        String uid = "uid_" + RandomNum.getRandInt(1, 1000);
         String os = osOptionGroup.getRandomOpt().getValue();
         String appid = this.appId;
         String area = areaOptionGroup.getRandomOpt().getValue();
