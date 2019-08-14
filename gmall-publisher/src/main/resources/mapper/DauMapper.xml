@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper SYSTEM "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.atguigu.gmall.publisher.mapper.DauMapper">
+    <!-- 查询日活 -->
+    <select id="getDauTotal" resultType="java.lang.Long">
+        select count(*) ct from gmall_dau where logdate = #{date}
+    </select>
+
+    <!-- 查询每时活跃设备 -->
+    <select id="getDauHourCount" resultMap="hourMap">
+        select logHour, count(*) ct from gmall_dau where logdate = #{date} group by logHour
+    </select>
+
+    <!-- 指定返回值类型 -->
+    <resultMap id="hourMap" type="java.util.Map" autoMapping="true">
+        <!--<result column="LOGHOUR" property="logHour"></result>-->
+        <!--<result column="CT" property="ct"></result>-->
+    </resultMap>
+</mapper>
