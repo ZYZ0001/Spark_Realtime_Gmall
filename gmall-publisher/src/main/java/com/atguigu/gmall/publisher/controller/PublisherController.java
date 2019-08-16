@@ -40,10 +40,19 @@ public class PublisherController {
         newMidMap.put("value", newMidTotal);
         list.add(newMidMap);
 
+        // 获取新增交易额
+        Double orderTotal = publisherService.getOrderAmount(date);
+        HashMap<String, Object> orderMap = new HashMap<>();
+        orderMap.put("id", "order_amount");
+        orderMap.put("name", "新增交易额");
+        orderMap.put("value", orderTotal);
+        list.add(orderMap);
+
         return JSON.toJSONString(list);
     }
 
     //访问路径: http://publisher:8070/realtime-hour?id=dau&date=2019-02-01
+    //访问路径: http://publisher:8070/realtime-hour?id=order_amount&date=2019-02-01
     //数据示例: {"yesterday":{"11":383,"12":123,"17":88,"19":200 }, "today":{"12":38,"13":1233,"17":123,"19":688 }}
     @GetMapping("realtime-hour")
     public String getRealtimeHour(@RequestParam("id") String id, @RequestParam("date") String date) {
@@ -59,7 +68,18 @@ public class PublisherController {
             map.put("today", todayHourDau);
 
             return JSON.toJSONString(map);
+        } else if ("order_amount".equals(id)) {
+            HashMap<String, Map> map = new HashMap<>();
 
+            // 获取昨天数据
+            Map<String, Double> yesterdayHourOrder = publisherService.getHourOrderAmount(MyDateUtil.getYesterday(date));
+            map.put("yesterday", yesterdayHourOrder);
+
+            // 获取今天数据
+            Map<String, Double> todayHourOrder = publisherService.getHourOrderAmount(date);
+            map.put("today", todayHourOrder);
+
+            return JSON.toJSONString(map);
         } else {
             // 其他的需求
             return null;

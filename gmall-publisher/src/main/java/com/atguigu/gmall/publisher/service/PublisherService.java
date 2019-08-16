@@ -27,4 +27,20 @@ public interface PublisherService {
      * @return
      */
     public Map<String, Long> getHourDauCount(String date);
+
+    /**
+     * 获取当日销售额
+     *
+     * @param date : 日期
+     * @return
+     */
+    public Double getOrderAmount(String date);
+
+    /**
+     * 获取每小时的销售额
+     *
+     * @param date : 日期
+     * @return
+     */
+    public Map<String, Double> getHourOrderAmount(String date);
 }

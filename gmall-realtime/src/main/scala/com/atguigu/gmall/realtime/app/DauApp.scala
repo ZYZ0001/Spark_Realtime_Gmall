@@ -5,7 +5,7 @@ import java.util
 import java.util.{Date, Properties}
 
 import com.atguigu.gmall.common.constant.GmallConstants
-import com.atguigu.gmall.realtime.bean.{GetClass, StartupLog}
+import com.atguigu.gmall.realtime.bean.{GetBeanClass, StartupLog}
 import com.atguigu.gmall.realtime.util.{MyKafkaUtil, PropertiesUtil}
 import org.apache.hadoop.conf.Configuration
 import org.apache.kafka.clients.consumer.ConsumerRecord
@@ -33,7 +33,7 @@ object DauApp {
         // TODO 转换为样例类
         val startupClassDStream: DStream[StartupLog] = kafkaDSteam.map(data => {
             val log: String = data.value()
-            GetClass.getStartupClass(log)
+            GetBeanClass.getStartupClass(log)
         })
 
         // TODO 获取Redis配置信息

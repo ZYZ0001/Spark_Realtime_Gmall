@@ -9,10 +9,12 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
+        <module>gmall-publisher</module>
         <module>gmall-common</module>
         <module>gamll-mock</module>
         <module>gmall-logger</module>
         <module>gmall-realtime</module>
+        <module>gmall-canal</module>
     </modules>
 
     <parent>
@@ -40,6 +42,17 @@
     <dependencies>
         <!--此处放日志包，所有项目都要引用-->
         <!-- 所有子项目的日志框架 -->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.tomcat.embed</groupId>-->
+            <!--<artifactId>tomcat-embed-core</artifactId>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>4.3.23.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
@@ -61,6 +74,7 @@
             <artifactId>log4j</artifactId>
             <version>${log4j.version}</version>
         </dependency>
+
     </dependencies>
 
     <dependencyManagement>
