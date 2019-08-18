@@ -20,22 +20,31 @@ public class CanalHandler {
     }
 
     /**
-     * 将对order_info表增加的数据发送到kafka上
+     * 将数据批量发送到kafka上
      */
     public void handle() {
         if ("order_info".equals(tableName) && CanalEntry.EventType.INSERT.equals(eventType)) {
             // 遍历数据集
             for (CanalEntry.RowData rowData : rowDatasList) {
-                JSONObject json = new JSONObject();
-                // 将数据封装为json
-                for (CanalEntry.Column column : rowData.getAfterColumnsList()) {
-                    json.put(column.getName(), column.getValue());
-                }
-                // 发往Kafka
-                MyKafkaSender.send(GmallConstants.KAFKA_TOPIC_ORDER_INFO, json.toJSONString());
-                System.out.println(json.toJSONString());
+                sendKafka(rowData, GmallConstants.KAFKA_TOPIC_ORDER_INFO);
             }
         }
     }
 
+    /**
+     * 数据发往Kafka
+     *
+     * @param rowData: 一行数据
+     * @param topic:   Kafka主题
+     */
+    public void sendKafka(CanalEntry.RowData rowData, String topic) {
+        JSONObject json = new JSONObject();
+        // 将数据封装为json
+        for (CanalEntry.Column column : rowData.getAfterColumnsList()) {
+            json.put(column.getName(), column.getValue());
+        }
+        // 发往Kafka
+        MyKafkaSender.send(topic, json.toJSONString());
+        System.out.println(json.toJSONString());
+    }
 }

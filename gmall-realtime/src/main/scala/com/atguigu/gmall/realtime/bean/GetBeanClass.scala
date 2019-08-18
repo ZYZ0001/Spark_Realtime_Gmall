@@ -33,8 +33,15 @@ object GetBeanClass {
       * @param log : 日志
       * @return
       */
-    def getEventClass(log: String): StartupLog = {
-        getStartupClass(log)
+    def getEventClass(log: String): EventLog = {
+        val eventLog: EventLog = JSON.parseObject(log, classOf[EventLog])
+
+        val date: String = new SimpleDateFormat("yyyy-MM-dd HH").format(new Date(eventLog.ts))
+
+        eventLog.logDate = date.split(" ")(0)
+        eventLog.logHour = date.split(" ")(1)
+
+        eventLog
     }
 
     /**
