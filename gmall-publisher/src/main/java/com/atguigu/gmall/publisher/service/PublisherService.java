@@ -43,4 +43,15 @@ public interface PublisherService {
      * @return
      */
     public Map<String, Double> getHourOrderAmount(String date);
+
+    /**
+     * 灵活查询订单数据分析
+     *
+     * @param date
+     * @param startpage
+     * @param size
+     * @param keyword
+     * @return
+     */
+    public Map<String, Object> getSaleDetail(String date, int startpage, int size, String keyword);
 }

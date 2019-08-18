@@ -59,4 +59,24 @@ object GetBeanClass {
 
         orderInfo
     }
+
+    /**
+      * 将订单详情数据转为样例类
+      *
+      * @param orderDetailString : 订单详情
+      * @return
+      */
+    def getOrderDetailClass(orderDetailString: String): OrderDetail = {
+        JSON.parseObject(orderDetailString, classOf[OrderDetail])
+    }
+
+    /**
+      * 将用户数据转为样例类
+      *
+      * @param userInfoString : 订单详情
+      * @return
+      */
+    def getUserInfoClass(userInfoString: String): UserInfo = {
+        JSON.parseObject(userInfoString, classOf[UserInfo])
+    }
 }

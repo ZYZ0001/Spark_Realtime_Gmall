@@ -6,6 +6,7 @@ import com.atguigu.gmall.canal.util.MyKafkaSender;
 import com.atguigu.gmall.common.constant.GmallConstants;
 
 import java.util.List;
+import java.util.Random;
 
 public class CanalHandler {
 
@@ -28,6 +29,14 @@ public class CanalHandler {
             for (CanalEntry.RowData rowData : rowDatasList) {
                 sendKafka(rowData, GmallConstants.KAFKA_TOPIC_ORDER_INFO);
             }
+        } else if ("order_detail".equals(tableName) && CanalEntry.EventType.INSERT.equals(eventType)) {
+            for (CanalEntry.RowData rowData : rowDatasList) {
+                sendKafka(rowData, GmallConstants.KAFKA_TOPIC_ORDER_DETAIL);
+            }
+        } else if ("user_info".equals(tableName) && CanalEntry.EventType.INSERT.equals(eventType)) {
+            for (CanalEntry.RowData rowData : rowDatasList) {
+                sendKafka(rowData, GmallConstants.KAFKA_TOPIC_USER_INFO);
+            }
         }
     }
 
@@ -42,6 +51,12 @@ public class CanalHandler {
         // 将数据封装为json
         for (CanalEntry.Column column : rowData.getAfterColumnsList()) {
             json.put(column.getName(), column.getValue());
+        }
+
+        try {
+            Thread.sleep(new Random().nextInt(3)*1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         // 发往Kafka
         MyKafkaSender.send(topic, json.toJSONString());

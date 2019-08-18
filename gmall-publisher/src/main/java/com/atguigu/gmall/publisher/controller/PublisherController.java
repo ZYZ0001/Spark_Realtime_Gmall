@@ -2,6 +2,8 @@ package com.atguigu.gmall.publisher.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.atguigu.gmall.common.util.MyDateUtil;
+import com.atguigu.gmall.publisher.bean.Option;
+import com.atguigu.gmall.publisher.bean.Stat;
 import com.atguigu.gmall.publisher.service.PublisherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -84,5 +87,69 @@ public class PublisherController {
             // 其他的需求
             return null;
         }
+    }
+
+    //http://localhost:8070/sale_detail?date=2019-04-01&&startpage=1&size=5&keyword=手机小米
+    @GetMapping("sale_detail")
+    public String getSaleDetail(@RequestParam("date") String date, @RequestParam("startpage") int startpage,
+                                @RequestParam("size") int size, @RequestParam("keyword") String keyword) {
+        // 获取查询数据
+        Map<String, Object> saleDetailMap = publisherService.getSaleDetail(date, startpage, size, keyword);
+        long total = (long) saleDetailMap.get("total");
+        Map ageMap = (Map) saleDetailMap.get("ageMap");
+        Map genderMap = (Map) saleDetailMap.get("genderMap");
+        List saleList = (List) saleDetailMap.get("detail");
+        //System.out.println(saleDetail);
+
+        // 分析年龄占比
+        Long age_20Count = 0L;
+        Long age20_30Count = 0L;
+        Long age30_Count = 0L;
+        for (Object o : ageMap.entrySet()) {
+            Map.Entry entry = (Map.Entry) o;
+            int age = Integer.parseInt((String) entry.getKey());
+            Long count = (Long) entry.getValue();
+            if (age < 20) {
+                age_20Count += count;
+            } else if (age < 30) {
+                age20_30Count += count;
+            } else {
+                age30_Count += count;
+            }
+        }
+        Double age_20Ratio = Math.round(age_20Count * 1000D / total) / 10D;
+        Double age20_30Ratio = Math.round(age20_30Count * 1000D / total) / 10D;
+        Double age30_Ratio = Math.round(age30_Count * 1000D / total) / 10D;
+
+        ArrayList<Option> ageRatioList = new ArrayList<>();
+        ageRatioList.add(new Option("20岁以下", age_20Ratio));
+        ageRatioList.add(new Option("20岁到30岁", age20_30Ratio));
+        ageRatioList.add(new Option("30岁及30岁以上", age30_Ratio));
+
+        //分析性别占比
+        long femaleCount = (long) genderMap.get("F");
+        long maleCount = (long) genderMap.get("M");
+        Double femaleRatio = Math.round(femaleCount * 1000D / total) / 10D;
+        Double maleRatio = Math.round(maleCount * 1000D / total) / 10D;
+
+        ArrayList<Option> genderRatioList = new ArrayList<>();
+        genderRatioList.add(new Option("男", femaleRatio));
+        genderRatioList.add(new Option("女", maleRatio));
+
+        System.out.println(genderRatioList);
+        //将饼图放在Stat中
+        ArrayList<Stat> statList = new ArrayList<>();
+        statList.add(new Stat(ageRatioList, "年龄段占比"));
+        statList.add(new Stat(genderRatioList, "性别占比"));
+        System.out.println(statList);
+
+        HashMap<String, Object> saleResultMap = new HashMap<>();
+        saleResultMap.put("total", total);
+        saleResultMap.put("stat", statList);
+        saleResultMap.put("detail", saleList);
+
+        System.out.println(JSON.toJSONString(saleResultMap));
+
+        return JSON.toJSONString(saleResultMap);
     }
 }
